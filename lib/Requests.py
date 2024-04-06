@@ -1,14 +1,6 @@
 import requests
+from lib.URLS import *
 
-URL = "https://datsedenspace.datsteam.dev"
-
-UNIVERSE = URL + "/player/universe"
-TRAVEL = URL + "/player/travel"
-COLLECT = URL + "/player/collect"
-RESET = URL + "/player/reset"
-ROUNDS = URL + "/player/rounds"
-
-AUTH = "660bceb945edd660bceb945ee1"
 
 def Logger(text:str):
     with open("logging.txt", "a", encoding="utf8") as f:
@@ -41,7 +33,9 @@ def Travel(planets:list):
 def Collect(garbage:dict):
     header = {"X-Auth-Token": AUTH }
 
-    response = requests.post(COLLECT, headers=header, json=garbage)
+    gar = {"garbage" : garbage}
+
+    response = requests.post(COLLECT, headers=header, json=gar)
 
     Logger(COLLECT + "\n")
     Logger(response.text)
