@@ -27,6 +27,10 @@ def Travel(planets:list):
     Logger(response.text)
     Logger("\n\n\n")
 
+    if '{"error":"you have already completed the game"}' == response.text:
+        print("\n\nfinished")
+        exit()
+
     return response.json()
 
 # may not work, didn't test

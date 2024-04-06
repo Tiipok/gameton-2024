@@ -2,11 +2,9 @@ from lib.Requests import Get
 from lib.Graph import Graph
 from lib.Ship import Ship
 from lib.URLS import *
-from time import sleep, time
+from time import sleep
 
-visited = set()
-
-def main(timer):
+def main(flag, timer):
     try:
         init_request = Get(UNIVERSE)
         ship = Ship(init_request["ship"], graph=Graph(init_request["universe"]))
@@ -20,7 +18,7 @@ def main(timer):
 
         def dfs(graph, visited, v):
             visited.add(v)
-            stack.append(v)  # Add the current node to the stack
+            stack.append(v)
 
             for neighbor in graph[v]:
                 if neighbor not in visited:
@@ -29,32 +27,30 @@ def main(timer):
         visited = set()
         dfs(ship.graph.graph, visited, ship.current_planet_name)
         stack.pop(0)
-        
-        stack.reverse()
-        # Reverse the stack to get the correct order of planets to visit
+        if flag:
+            stack.reverse()
         
         for planet in stack:
-            if planet in visited:
-                continue
-
-            visited.add(planet)
             print("Going to:", planet)
             ship.TravelTo(planet)
             ship.TryCollect()
 
             percent = ship.GetPersent()
-            
-            print(str(percent)[:4] + "%", "going to Eden")
-            ship.TravelTo("Eden")
-            ship.baggage = [['.' for _ in range(ship.capacityX)] for _ in range(ship.capacityY)]
-            ship.number_of_baggage = 1
-            
+            if percent > 0:
+                print(str(percent)[:4] + "%", "going to Eden")
+                ship.TravelTo("Eden")
+                ship.baggage = [['.' for _ in range(ship.capacityX)] for _ in range(ship.capacityY)]
+                ship.number_of_baggage = 1
 
             sleep(timer)
+
     except:
         timer += 0.05
-        main(timer)
+        print("increasing timer", timer)
+        main(flag, timer)
+
 
 if __name__ == "__main__":
-    # main(0.05)
-    print(Get(UNIVERSE))
+    while True:
+        main(True, 0.05)
+        main(False, 0.05)
